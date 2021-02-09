@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using UdemyBlogWebSiteUI.ApiServices.Interfaces;
+
+namespace UdemyBlogWebSiteUI.Controlllers
+{
+    public class HomeController : Controller
+    {
+        private readonly IBlogApiService _blogApiService;
+        public HomeController(IBlogApiService blogApiService)
+        {
+            _blogApiService = blogApiService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            return View(await _blogApiService.GetAllAsync());
+        }
+    }
+}
