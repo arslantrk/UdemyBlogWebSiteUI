@@ -7,16 +7,16 @@ using UdemyBlogWebSiteUI.ApiServices.Interfaces;
 
 namespace UdemyBlogWebSiteUI.ViewComponents
 {
-    public class CategoryList : ViewComponent
+    public class GetCategoryName : ViewComponent
     {
         private readonly ICategoryApiService _categoryApiService;
-        public CategoryList(ICategoryApiService categoryApiService)
+        public GetCategoryName(ICategoryApiService categoryApiService)
         {
             _categoryApiService = categoryApiService;
         }
-        public IViewComponentResult Invoke()
-        {
-            return View(_categoryApiService.GetAllWithBlogsCount().Result);
+        public IViewComponentResult Invoke (int categoryId)
+        {//Asenkronik methodu kullanamıcaz oyüzden resultunu alıcaz.
+            return View(_categoryApiService.GetByIdAsync(categoryId).Result);
         }
     }
 }

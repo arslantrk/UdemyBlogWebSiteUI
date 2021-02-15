@@ -26,5 +26,26 @@ namespace UdemyBlogWebSiteUI.ApiServices.Concrete
             }
             return null;
         }
+
+        public async Task<BlogListModel> GetByIdAsync(int id)
+        {
+            var responseMessage = await _httpClient.GetAsync($"{ id }");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<BlogListModel>(await responseMessage.Content.ReadAsStringAsync());
+                //burdan gelicek string json datayı BlogListModel Çeviriyoruz.
+            }
+            return null;
+        }
+        public async Task<List<BlogListModel>> GetAllByCategoryIdAsync(int id)
+        {
+            var responceMessage = await _httpClient.GetAsync($"GetAllByCategoryId/{id}");
+            if (responceMessage.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<List<BlogListModel>>(await responceMessage.Content.ReadAsStringAsync());
+
+            }
+            return null;
+        }
     }
 }

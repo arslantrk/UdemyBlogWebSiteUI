@@ -20,6 +20,7 @@ namespace UdemyBlogWebSiteUI
         {
             services.AddHttpClient<IBlogApiService, BlogApiManager>(); //baðýmlýlýkta tekrar göstermemize gerek yok
             services.AddHttpClient<ICategoryApiService, CategoryApiManager>();
+            services.AddHttpClient<IImageApiService, ImageApiManager>();
             services.AddControllersWithViews();
         }
 
