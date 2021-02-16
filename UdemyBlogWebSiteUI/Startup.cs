@@ -40,9 +40,9 @@ namespace UdemyBlogWebSiteUI
             app.UseStaticFiles();//wwwroot dýþarýya açýyoruz
             app.UseEndpoints(endpoints =>
             {//ROUTE ÞEMALARIM
-                endpoints.MapControllerRoute(name: "areas", pattern: "{area}/{controller=Home}/{action=Index}/{?id}");
-                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{?id}");
-            });
+                endpoints.MapControllerRoute(name: "areas", pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+        });
         }
     }
 }
