@@ -18,9 +18,12 @@ namespace UdemyBlogWebSiteUI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddSession();
             services.AddHttpClient<IBlogApiService, BlogApiManager>(); //baðýmlýlýkta tekrar göstermemize gerek yok
             services.AddHttpClient<ICategoryApiService, CategoryApiManager>();
             services.AddHttpClient<IImageApiService, ImageApiManager>();
+            services.AddHttpClient<IAuthApiService, AuthApiManager>();
             services.AddControllersWithViews();
         }
 
@@ -33,6 +36,7 @@ namespace UdemyBlogWebSiteUI
             }
 
             app.UseRouting();
+            app.UseSession();
             app.UseStaticFiles();//wwwroot dýþarýya açýyoruz
             app.UseEndpoints(endpoints =>
             {
