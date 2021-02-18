@@ -19,6 +19,7 @@ namespace UdemyBlogWebSiteUI.Models
         [Required(ErrorMessage = "Açıklama alanı gereklidir")]
         [Display(Name = "Açıklama :")]
         public string ShortDescription { get; set; }
+        [Display(Name ="Resim Seçiniz :")]
         public IFormFile Image { get; set; }
     }
 }
