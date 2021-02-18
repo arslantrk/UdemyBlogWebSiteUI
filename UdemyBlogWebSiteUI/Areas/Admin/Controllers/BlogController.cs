@@ -36,7 +36,7 @@ namespace UdemyBlogWebSiteUI.Areas.Admin.Controllers
                 await _blogApiService.AddAsync(model);
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(model);
         }
     }
 }

@@ -15,8 +15,8 @@ namespace UdemyBlogWebSiteUI.ApiServices.Concrete
     public class BlogApiManager : IBlogApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly HttpContextAccessor _httpContextAccessor;
-        public BlogApiManager(HttpClient httpClient, HttpContextAccessor httpContextAccessor)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public BlogApiManager(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             _httpClient = httpClient;
@@ -62,24 +62,26 @@ namespace UdemyBlogWebSiteUI.ApiServices.Concrete
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue
                     (blogAddModel.Image.ContentType);
 
-                var user = _httpContextAccessor.HttpContext.Session.GetObject<AppUserViewModel>("activeUser");
-                blogAddModel.AppUserId = user.Id;
-
                 formData.Add(byteContent, nameof(BlogAddModel.Image), blogAddModel.Image.FileName);
-                formData.Add(new StringContent
-                    (blogAddModel.AppUserId.ToString()), nameof(BlogAddModel.AppUserId));
-                formData.Add(new StringContent
-                    (blogAddModel.ShortDescription), nameof(BlogAddModel.ShortDescription));
-                formData.Add(new StringContent
-                    (blogAddModel.Description), nameof(BlogAddModel.Description));
-                formData.Add(new StringContent
-                    (blogAddModel.Title), nameof(BlogAddModel.Title));
-
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue
-                    ("Bearer", _httpContextAccessor.HttpContext.Session.GetString("token"));
-
-                await _httpClient.PostAsync("", formData);
             }
+
+            var user = _httpContextAccessor.HttpContext.Session.GetObject<AppUserViewModel>("activeUser");
+            blogAddModel.AppUserId = user.Id;
+
+            formData.Add(new StringContent
+                (blogAddModel.AppUserId.ToString()), nameof(BlogAddModel.AppUserId));
+            formData.Add(new StringContent
+                (blogAddModel.ShortDescription), nameof(BlogAddModel.ShortDescription));
+            formData.Add(new StringContent
+                (blogAddModel.Description), nameof(BlogAddModel.Description));
+            formData.Add(new StringContent
+                (blogAddModel.Title), nameof(BlogAddModel.Title));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue
+                ("Bearer", _httpContextAccessor.HttpContext.Session.GetString("token"));
+
+            await _httpClient.PostAsync("", formData);
+
         }
     }
 }
