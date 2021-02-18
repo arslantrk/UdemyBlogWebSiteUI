@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using UdemyBlogWebSiteUI.ApiServices.Interfaces;
 using UdemyBlogWebSiteUI.Models;
@@ -12,8 +14,10 @@ namespace UdemyBlogWebSiteUI.ApiServices.Concrete
     public class BlogApiManager : IBlogApiService
     {
         private readonly HttpClient _httpClient;
-        public BlogApiManager(HttpClient httpClient)
+        private readonly HttpContextAccessor _httpContextAccessor;
+        public BlogApiManager(HttpClient httpClient, HttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("http://localhost:51921/api/blogs/");
         }
@@ -46,6 +50,24 @@ namespace UdemyBlogWebSiteUI.ApiServices.Concrete
 
             }
             return null;
+        }
+        public async Task AddAsync(BlogAddModel blogAddModel)
+        {
+            MultipartFormDataContent formData = new MultipartFormDataContent();
+            if (blogAddModel.Image != null)
+            {
+                var bytes = await System.IO.File.ReadAllBytesAsync(blogAddModel.Image.FileName);
+                ByteArrayContent byteContent = new ByteArrayContent(bytes);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue
+                    (blogAddModel.Image.ContentType);
+
+                formData.Add(byteContent, nameof(BlogAddModel.Image), blogAddModel.Image.FileName);
+                formData.Add(new StringContent
+                    (blogAddModel.AppUserId.ToString()), nameof(BlogAddModel.AppUserId));
+                formData.Add(new StringContent
+                    (blogAddModel.ShortDescription), nameof(BlogAddModel.ShortDescription));
+
+            }
         }
     }
 }
