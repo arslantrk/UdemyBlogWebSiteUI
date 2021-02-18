@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -44,7 +46,7 @@ namespace UdemyBlogWebSiteUI.ApiServices.Concrete
         }
         public async Task<List<BlogListModel>> GetAllByCategoryIdAsync(int id)
         {
-            var responceMessage = await _httpClient.GetAsync($"GetAllByCategoryId/{id}");
+            var responceMessage =  await _httpClient.GetAsync($"GetAllByCategoryId/{id}");
             if (responceMessage.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<List<BlogListModel>>(await responceMessage.Content.ReadAsStringAsync());
@@ -57,12 +59,22 @@ namespace UdemyBlogWebSiteUI.ApiServices.Concrete
             MultipartFormDataContent formData = new MultipartFormDataContent();
             if (blogAddModel.Image != null)
             {
-                var bytes = await System.IO.File.ReadAllBytesAsync(blogAddModel.Image.FileName);
-                ByteArrayContent byteContent = new ByteArrayContent(bytes);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue
-                    (blogAddModel.Image.ContentType);
+                //var bytes = new byte[];
+                //var bytes = await System.IO.File.ReadAllBytesAsync(blogAddModel.Image.FileName);
+                //var bytes = await System.IO.File.ReadAllBytesAsync(blogAddModel.Image.FileName);
+                using (var ms = new MemoryStream())
+                {
+                    await blogAddModel.Image.CopyToAsync(ms);
+                    var bytes = ms.ToArray();
+                    // string s = Convert.ToBase64String(fileBytes);
+                    // act on the Base64 data
 
-                formData.Add(byteContent, nameof(BlogAddModel.Image), blogAddModel.Image.FileName);
+                    ByteArrayContent byteContent = new ByteArrayContent(bytes);
+                    byteContent.Headers.ContentType = new MediaTypeHeaderValue
+                        (blogAddModel.Image.ContentType);
+
+                    formData.Add(byteContent, nameof(BlogAddModel.Image), blogAddModel.Image.FileName);
+                }
             }
 
             var user = _httpContextAccessor.HttpContext.Session.GetObject<AppUserViewModel>("activeUser");

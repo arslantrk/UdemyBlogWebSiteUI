@@ -29,14 +29,14 @@ namespace UdemyBlogWebSiteUI.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(BlogAddModel model)
+        public async Task<IActionResult> Create(BlogAddModel blogAddModel)
         {
             if (ModelState.IsValid)
             {
-                await _blogApiService.AddAsync(model);
+                await _blogApiService.AddAsync(blogAddModel);
                 return RedirectToAction("Index");
             }
-            return View(model);
+            return View(blogAddModel);
         }
     }
 }
